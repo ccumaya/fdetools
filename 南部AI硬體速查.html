@@ -1,0 +1,438 @@
+<title>南部 AI 硬體速查</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
+<style>
+:root{
+  --bg:#F3F5F2; --surface:#FFFFFF; --surface-2:#E8EEEA; --ink:#17201C; --ink-2:#44524C; --muted:#6A7771;
+  --line:#D3DCD7; --accent:#1D6A50; --accent-ink:#FFFFFF; --accent-soft:#DDEDE5;
+  --warn:#8F5400; --warn-soft:#FAEED8;
+  --t1:#CFE6DA; --t1-ink:#1D4A39; --t2:#93C9AF; --t2-ink:#123527; --t3:#3E9373; --t3-ink:#FFFFFF; --t4:#15543E; --t4-ink:#FFFFFF;
+  --track:#E1E8E4;
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0F1412; --surface:#161D1A; --surface-2:#1E2723; --ink:#E3EAE6; --ink-2:#B2BFB9; --muted:#8B9993;
+    --line:#2B3732; --accent:#5EC39A; --accent-ink:#0B1F17; --accent-soft:#1A3A2D;
+    --warn:#E6AC4C; --warn-soft:#3A2B12;
+    --t1:#23413A; --t1-ink:#BFE3D2; --t2:#2F6B55; --t2-ink:#E3F4EC; --t3:#46A882; --t3-ink:#08201A; --t4:#8FDDBB; --t4-ink:#08201A;
+    --track:#26312C;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0F1412; --surface:#161D1A; --surface-2:#1E2723; --ink:#E3EAE6; --ink-2:#B2BFB9; --muted:#8B9993;
+  --line:#2B3732; --accent:#5EC39A; --accent-ink:#0B1F17; --accent-soft:#1A3A2D;
+  --warn:#E6AC4C; --warn-soft:#3A2B12;
+  --t1:#23413A; --t1-ink:#BFE3D2; --t2:#2F6B55; --t2-ink:#E3F4EC; --t3:#46A882; --t3-ink:#08201A; --t4:#8FDDBB; --t4-ink:#08201A;
+  --track:#26312C;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.65;padding-inline:16px;padding-block:0 48px}
+a{color:var(--accent);text-underline-offset:3px}
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1080px;margin:0 auto}
+.mono{font-family:var(--mono)}
+
+/* header */
+header.top{padding-block:32px 20px;display:grid;gap:14px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--accent);text-transform:uppercase}
+h1{font-size:clamp(28px,5vw,40px);font-weight:900;line-height:1.2;margin:0;text-wrap:balance;letter-spacing:.01em}
+.lede{margin:0;color:var(--ink-2);font-size:16px;max-width:40em}
+.meta{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--muted)}
+.meta b{color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
+.caution{display:flex;gap:10px;align-items:flex-start;background:var(--warn-soft);color:var(--ink);border-radius:10px;padding:10px 14px;font-size:14px}
+.caution strong{color:var(--warn);white-space:nowrap;flex:none}
+
+/* scenarios */
+.ask{margin-block:8px 22px}
+.ask h2{font-size:14px;font-weight:700;color:var(--muted);margin:0 0 10px;letter-spacing:.04em}
+.ask-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.ask-btn{all:unset;box-sizing:border-box;cursor:pointer;display:grid;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;transition:border-color .15s,transform .15s}
+.ask-btn:hover{border-color:var(--accent)}
+.ask-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ask-q{font-weight:700;font-size:15px}
+.ask-a{font-size:13px;color:var(--ink-2)}
+.ask-a span{color:var(--accent);font-weight:700}
+
+/* tabs */
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{all:unset;cursor:pointer;padding:12px 14px 10px;font-weight:700;font-size:15px;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.tab small{font-family:var(--mono);font-weight:500;font-size:12px;margin-left:6px;color:var(--muted)}
+section.panel{padding-top:22px}
+
+/* controls */
+.controls{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:16px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{all:unset;cursor:pointer;font-size:13px;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ctl-label{font-size:12px;color:var(--muted);margin-right:2px}
+.grp{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+select,input[type="search"]{font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+input[type="search"]{min-width:0;width:min(280px,100%)}
+.count{font-size:13px;color:var(--muted);margin-left:auto}
+
+/* server banner */
+.server{display:grid;gap:2px;background:var(--surface-2);border-radius:12px;padding:14px 16px;margin-bottom:18px}
+.server .lbl{font-size:12px;letter-spacing:.08em;color:var(--muted)}
+.server .m{font-family:var(--mono);font-weight:600;font-size:16px}
+.server .d{font-size:13px;color:var(--ink-2)}
+
+/* gpu rows */
+.gpu-list{display:grid;gap:10px}
+.gpu{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,2fr);gap:14px 24px}
+.gpu-id{display:grid;gap:8px;align-content:start}
+.gpu-name{font-family:var(--mono);font-weight:600;font-size:16px;line-height:1.35;margin:0}
+.gpu-sub{font-size:12.5px;color:var(--muted)}
+.tier{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:2px 10px;border-radius:999px;width:max-content}
+.tier[data-t="入門"]{background:var(--t1);color:var(--t1-ink)}
+.tier[data-t="中階"]{background:var(--t2);color:var(--t2-ink)}
+.tier[data-t="高階"]{background:var(--t3);color:var(--t3-ink)}
+.tier[data-t="頂級"]{background:var(--t4);color:var(--t4-ink)}
+.meter{display:grid;gap:4px}
+.meter-top{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.meter-top b{color:var(--ink);font-family:var(--mono);font-weight:600;font-variant-numeric:tabular-nums}
+.bar{height:8px;background:var(--track);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:4px}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.fact{display:grid;gap:2px;align-content:start}
+.fact .k{font-size:12px;color:var(--muted)}
+.fact .v{font-size:18px;font-weight:700;line-height:1.3;font-variant-numeric:tabular-nums}
+.fact .s{font-size:12px;color:var(--ink-2)}
+.gpu-body{display:grid;gap:12px;align-content:start}
+.use{margin:0;font-size:14px}
+.use b{font-weight:700;color:var(--ink-2);margin-right:6px}
+.warnline{margin:0;font-size:13px;color:var(--warn)}
+details.more{font-size:13px;color:var(--ink-2);grid-column:1/-1;border-top:1px dashed var(--line);padding-top:8px}
+details.more summary{cursor:pointer;color:var(--muted);width:max-content}
+.spec{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:6px 18px;margin-top:8px}
+.spec div{display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid var(--line);padding-block:3px}
+.spec span:last-child{font-family:var(--mono);color:var(--ink);text-align:right}
+.links{margin-top:8px;display:flex;flex-wrap:wrap;gap:4px 14px}
+.est{color:var(--warn)}
+
+.whom{margin-top:22px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.whom h3{margin:0 0 4px;font-size:16px}
+.whom p{margin:0 0 10px;font-size:13px;color:var(--ink-2)}
+.whom .chips .chip{font-size:13.5px}
+.foot{font-size:12.5px;color:var(--muted);margin-top:14px;max-width:60em}
+
+/* vendors */
+.v-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,460px),1fr));gap:12px}
+.vcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:grid;gap:10px;align-content:start}
+.v-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.v-name{margin:0;font-size:16.5px;font-weight:700;line-height:1.4;text-wrap:balance}
+.v-where{font-size:12.5px;color:var(--muted)}
+.prio{flex:none;font-size:12px;font-weight:700;padding:2px 10px;border-radius:999px;border:1.5px solid var(--accent);white-space:nowrap}
+.prio[data-p="高"]{background:var(--accent);color:var(--accent-ink)}
+.prio[data-p="中"]{color:var(--accent);background:var(--accent-soft);border-color:transparent}
+.prio[data-p="低"]{color:var(--muted);border-color:var(--line)}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:12px;padding:1px 8px;border-radius:6px;background:var(--surface-2);color:var(--ink-2)}
+.vcard p{margin:0;font-size:14px}
+.vcard .lab{display:block;font-size:12px;color:var(--muted);margin-bottom:1px}
+.vcard .note{font-size:13px;color:var(--warn)}
+.contact{display:grid;gap:6px;border-top:1px solid var(--line);padding-top:10px;font-size:13.5px}
+.crow{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.crow .lab{margin:0;min-width:3em}
+.crow .val{user-select:all;font-variant-numeric:tabular-nums;word-break:break-all}
+.copy{all:unset;cursor:pointer;font-size:12px;color:var(--accent);border:1px solid var(--line);border-radius:6px;padding:0 8px}
+.copy:focus-visible{outline:2px solid var(--accent)}
+.src{font-size:12px;color:var(--muted)}
+.empty{padding:28px;text-align:center;color:var(--muted);background:var(--surface);border-radius:12px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:var(--ink-2);margin-bottom:14px}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+
+/* terms */
+.terms{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:10px}
+.term{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.term dt{font-weight:700;font-size:15px;margin-bottom:4px}
+.term dt .mono{font-size:13px;color:var(--accent);margin-left:6px}
+.term dd{margin:0;font-size:14px;color:var(--ink-2)}
+.talk{margin-top:22px;background:var(--accent-soft);border-radius:12px;padding:16px 18px}
+.talk h3{margin:0 0 8px;font-size:16px}
+.talk ul{margin:0;padding-left:1.2em;display:grid;gap:6px;font-size:14px}
+
+footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
+
+@media (max-width:720px){
+  .gpu{grid-template-columns:1fr}
+  .facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .count{margin-left:0;width:100%}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">FDE 前線顧問速查</div>
+    <h1>南部 AI 硬體速查</h1>
+    <p class="lede">客戶想自建 AI 時，先在這裡查：大概要配什麼 GPU、一張多少錢、南部可以找誰。</p>
+    <div class="meta" id="meta"></div>
+    <div class="caution"><strong>提醒</strong><span>頁面上的價格是公開通路或換算的<b>參考價</b>，不是報價。對客戶請說「大約」，實際價格請客戶向系統整合商詢價。</span></div>
+  </header>
+
+  <div class="ask">
+    <h2>客戶這樣問，先看這裡</h2>
+    <div class="ask-grid">
+      <button class="ask-btn" type="button" data-go="ws">
+        <span class="ask-q">「想先小規模試用地端 AI」</span>
+        <span class="ask-a">一兩人用、放在辦公桌上 → <span>桌上型 AI 工作站廠商</span></span>
+      </button>
+      <button class="ask-btn" type="button" data-go="gpu">
+        <span class="ask-q">「要一台部門共用的 AI 伺服器」</span>
+        <span class="ask-a">多人共用、跑較大模型 → <span>GPU 怎麼選</span></span>
+      </button>
+      <button class="ask-btn" type="button" data-go="edge">
+        <span class="ask-q">「工廠現場／攝影機要做 AI 辨識」</span>
+        <span class="ask-a">放在產線或戶外 → <span>邊緣 AI 裝置廠商</span></span>
+      </button>
+    </div>
+  </div>
+
+  <nav class="tabs" role="tablist" aria-label="頁面分類">
+    <button class="tab" role="tab" id="tab-gpu" data-tab="gpu" aria-controls="p-gpu">GPU 怎麼選<small id="n-gpu"></small></button>
+    <button class="tab" role="tab" id="tab-vendors" data-tab="vendors" aria-controls="p-vendors">南部廠商<small id="n-ven"></small></button>
+    <button class="tab" role="tab" id="tab-terms" data-tab="terms" aria-controls="p-terms">名詞小抄</button>
+  </nav>
+
+  <!-- GPU -->
+  <section class="panel" id="p-gpu" role="tabpanel" aria-labelledby="tab-gpu">
+    <div class="server">
+      <span class="lbl">以這台伺服器為例</span>
+      <span class="m" id="srv-m"></span>
+      <span class="d" id="srv-d"></span>
+    </div>
+    <div class="controls">
+      <div class="grp"><span class="ctl-label">等級</span><div class="chips" id="tier-chips"></div></div>
+      <div class="grp">
+        <label class="ctl-label" for="gpu-sort">排序</label>
+        <select id="gpu-sort">
+          <option value="power">算力：強 → 弱</option>
+          <option value="price">價格：低 → 高</option>
+          <option value="cp">CP 值：高 → 低</option>
+        </select>
+      </div>
+      <span class="count" id="gpu-count"></span>
+    </div>
+    <div class="gpu-list" id="gpu-list"></div>
+
+    <div class="whom">
+      <h3>這類伺服器，南部可以找誰詢價</h3>
+      <p>以下廠商的資料中提到 GPU 伺服器，且在南部有公司或據點。點名稱可以看聯絡方式。</p>
+      <div class="chips" id="whom"></div>
+    </div>
+
+    <p class="foot"><b>怎麼看：</b>「算力」以 NVIDIA H100 NVL 為 100 分換算。「可跑模型」依記憶體大小粗估，指的是<b>推論（使用）</b>、模型經過壓縮（量化）後的情況；訓練或微調需要更多記憶體。「4 卡整機」只算 4 張 GPU 的錢，不含伺服器本體、稅與整合費用。標示「推估」的規格是依同系列比例推算，採購前請向原廠確認。</p>
+  </section>
+
+  <!-- Vendors -->
+  <section class="panel" id="p-vendors" role="tabpanel" aria-labelledby="tab-vendors" hidden>
+    <div class="controls">
+      <input type="search" id="v-q" placeholder="搜尋公司、產品或縣市" aria-label="搜尋廠商">
+      <div class="grp"><span class="ctl-label">地區</span><div class="chips" id="cat-chips"></div></div>
+      <div class="grp"><span class="ctl-label">能提供</span><div class="chips" id="tag-chips"></div></div>
+      <div class="grp"><label class="ctl-label" for="v-prio">推薦度</label>
+        <select id="v-prio"><option value="">全部</option><option value="高">只看「高」</option><option value="高中">「高」與「中」</option></select>
+      </div>
+      <span class="count" id="v-count"></span>
+    </div>
+    <div class="legend">
+      <span><span class="prio" data-p="高">高</span>有明確 AI 產品，南部可接洽</span>
+      <span><span class="prio" data-p="中">中</span>可供貨，需詢價或南部窗口待確認</span>
+      <span><span class="prio" data-p="低">低</span>資料不足或較偏離需求</span>
+    </div>
+    <div class="v-grid" id="v-grid"></div>
+    <p class="foot">南部幾乎沒有自行設計製造 AI 工作站的廠商，實務上是「品牌原廠產品＋南部系統整合商供貨與維運」。電話、地址標示來自第三方者，聯繫前請先以官網確認。</p>
+  </section>
+
+  <!-- Terms -->
+  <section class="panel" id="p-terms" role="tabpanel" aria-labelledby="tab-terms" hidden>
+    <dl class="terms" id="terms"></dl>
+    <div class="talk">
+      <h3>跟客戶談的三個起手問題</h3>
+      <ul>
+        <li><b>要做什麼？</b>內部問答／文件查詢（RAG）、客服、影像辨識，還是要自己訓練模型？這會決定要「推論」還是「訓練」等級的卡。</li>
+        <li><b>多少人同時用？</b>一兩人試用，桌上型 AI 工作站就夠；部門或全公司共用，才需要多卡伺服器。</li>
+        <li><b>資料能不能出公司？</b>不能出公司才需要地端；可以的話，先租雲端算力試水溫，成本低很多。</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer id="foot"></footer>
+</div>
+
+<script>
+const DATA = {"updated": "2026-09-23", "server": {"model": "Supermicro SYS-741GE-TNRT", "desc": "4U 直立／塔式伺服器，雙路 Intel Xeon 第 4／5 代，最多裝 4 張 GPU"}, "suppliers": [{"id": "1", "name": "欣亞數位股份有限公司", "priority": "高", "cat": "A", "catLabel": "南部在地", "city": "高雄市", "south": "高雄市三民區建國二路121號（官網總部）；門市遍布台南、嘉義、屏東", "type": "3C通路／商用SI", "offer": "商用部門銷售NVIDIA AI PC、AI工作站；整理7品牌GB10桌上型AI工作站（ASUS GX10、Acer GN100、GIGABYTE AI TOP ATOM、Dell、HP、麗臺、Altos）；提供租賃（月租888元起）、伺服器虛擬化、資安", "note": "最符合「小型AI工作站直售中小企業」", "phone": "0800-380-380；高雄建國門市 07-237-3632", "email": "sinya.marketing@sinya.com.tw", "web": "https://corp.sinya.com.tw/biz/", "src": "https://corp.sinya.com.tw/post/6890/", "verify": "官網＋商工登記", "tags": ["桌上型 AI 工作站", "AI PC", "租賃"]}, {"id": "2", "name": "競新資訊有限公司", "priority": "高", "cat": "A", "catLabel": "南部在地", "city": "高雄市", "south": "高雄市前金區中正四路103號4樓之3", "type": "組裝商", "offer": "AI算力主機客製、多卡GPU伺服器、算力租賃；品牌工作站與DIY組裝", "note": "南部少數明講「AI算力主機客製」者，適合小型地端LLM主機", "phone": "07-241-0030；0981-083-329", "email": "", "web": "https://soeasy.pengran.com.tw/", "src": "https://soeasy.pengran.com.tw/products/custom/", "verify": "官網＋商工登記", "tags": ["GPU 伺服器", "桌上型 AI 工作站", "租賃"]}, {"id": "3", "name": "大綜電腦系統股份有限公司 JETWELL（上櫃3147）", "priority": "高", "cat": "A", "catLabel": "南部在地", "city": "高雄市", "south": "高雄市左營區民族一路1163號", "type": "系統整合商", "offer": "AI與IT一站式服務；2026 Q1 AI GPU伺服器占營收63%，具直接液冷(DLC)能力", "note": "南部規模最大上櫃SI；客戶半數為半導體業，中小企業小案需確認意願", "phone": "07-345-8011", "email": "", "web": "https://www.jetwell.com.tw/", "src": "https://blog.fugle.tw/post/earnings-call-3147-2026-04-22", "verify": "法說會摘要＋商工登記", "tags": ["GPU 伺服器", "整合・維運"]}, {"id": "4", "name": "詮翊電腦股份有限公司", "priority": "高", "cat": "A", "catLabel": "南部在地", "city": "高雄市", "south": "高雄市鼓山區明華路337號3樓", "type": "系統整合商", "offer": "共同供應契約品項含NVIDIA L40S/H100 GPU伺服器、Xeon W/Threadripper繪圖工作站；ASUS、Dell、HPE、Supermicro、MiTAC", "note": "ISO 27001；共契僅機關可用，民間需另議價", "phone": "07-553-9969", "email": "", "web": "https://www.cy.com.tw/", "src": "https://www.cy.com.tw/server", "verify": "官網＋商工登記", "tags": ["GPU 伺服器", "整合・維運"]}, {"id": "5", "name": "金兆葳系統整合服務企業有限公司", "priority": "高", "cat": "A", "catLabel": "南部在地", "city": "高雄市", "south": "高雄辦公室：高雄市苓雅區海邊路31號26樓之7", "type": "系統整合商", "offer": "經銷GIGABYTE AI伺服器，搭配MylinTek AI/ML平台與基礎架構規劃", "note": "2023年成立，規模小", "phone": "07-269-1391；台北 02-2791-1008", "email": "", "web": "https://www.kcwin.com.tw/", "src": "https://www.kcwin.com.tw/product_info?id=180", "verify": "官網＋商工登記", "tags": ["GPU 伺服器", "整合・維運"]}, {"id": "6", "name": "中冠資訊股份有限公司（中鋼集團）", "priority": "中", "cat": "A", "catLabel": "南部在地", "city": "高雄市", "south": "高雄市前鎮區成功二路88號（中鋼大樓）", "type": "系統整合商", "offer": "InfoHCI超融合平台、AvaGPT企業AI客服、智慧製造；軟硬體一站式", "note": "偏軟體整合，未列GPU硬體型號", "phone": "07-535-0101 #35620", "email": "achamp.ai@icsc.com.tw", "web": "https://www.achamp.ai/", "src": "https://www.achamp.ai/", "verify": "官網＋商工登記", "tags": ["整合・維運"]}, {"id": "7", "name": "順發電腦股份有限公司（上櫃6154）", "priority": "中", "cat": "A", "catLabel": "南部在地", "city": "高雄市", "south": "高雄市三民區建國二路2號", "type": "3C通路", "offer": "3C量販，AI PC專區，門市約127處", "note": "偏消費端入門AI PC；企業採購窗口未確認", "phone": "07-236-6221", "email": "", "web": "https://www.sunfar.com.tw/", "src": "https://www.isunfar.com.tw/banner/AI/index.htm", "verify": "登記資料；官網未能讀取", "tags": ["AI PC"]}, {"id": "8", "name": "萬達科技股份有限公司 WINDAR", "priority": "中", "cat": "A", "catLabel": "南部在地", "city": "台南市", "south": "台南市永康區中華路144-14號6樓（官網）", "type": "系統整合商", "offer": "伺服器、儲存、工作站、網路資安、雲端備援、維運代管；ASUS、HPE、Lenovo、Dell、Synology", "note": "台南首選SI；GPU伺服器需詢價", "phone": "06-313-8761", "email": "sharen@windar.com.tw", "web": "https://www.windar.com.tw/", "src": "https://www.windar.com.tw/", "verify": "官網＋商工登記", "tags": ["GPU 伺服器", "整合・維運"]}, {"id": "9", "name": "尚邑科技有限公司", "priority": "中", "cat": "A", "catLabel": "南部在地", "city": "台南市", "south": "台南市安平區（官網：建國三街237號）", "type": "系統整合商", "offer": "監控、資安、伺服器、儲存整合；華碩經銷，Dell、HPE、Lenovo、Synology", "note": "共契立約商；未列AI產品", "phone": "06-336-3777", "email": "", "web": "https://www.csyy.com.tw/", "src": "https://www.csyy.com.tw/", "verify": "官網＋商工登記", "tags": ["整合・維運"]}, {"id": "10", "name": "鵬鈞科技有限公司", "priority": "中", "cat": "A", "catLabel": "南部在地", "city": "高雄市", "south": "高雄市三民區建國二路39號", "type": "華碩商用經銷", "offer": "商用桌機、筆電、採購規劃、租賃、原廠維修", "note": "可代購ASUS AI PC/Ascent GX10（需確認）；ISO 27001", "phone": "07-238-4932", "email": "", "web": "http://www.pj-tech.com.tw/", "src": "https://www.asus.com/tw/event/dealer-list.pdf", "verify": "官網＋華碩經銷名冊", "tags": ["桌上型 AI 工作站", "AI PC", "整合・維運", "租賃"]}, {"id": "11", "name": "頂揚科技股份有限公司", "priority": "低", "cat": "A", "catLabel": "南部在地", "city": "高雄市", "south": "高雄市左營區華夏路895號14樓", "type": "華碩商用經銷", "offer": "資訊設備銷售維修、網路建置；客戶以政府學校為主", "note": "未見AI產品；官網憑證過期", "phone": "07-591-8355", "email": "a@tingyoung.com", "web": "http://www.tingyoung.com/", "src": "https://1204362561657.web66.tw/web/Comp?command=Intro", "verify": "黃頁＋商工登記", "tags": ["整合・維運"]}, {"id": "12", "name": "星辰電腦 NSZPC", "priority": "低", "cat": "A", "catLabel": "南部在地", "city": "高雄市", "south": "高雄市前鎮區凱旋三路217號", "type": "組裝商", "offer": "組裝AI模型訓練用主機", "note": "無正式官網；資料不足", "phone": "0988-523-801", "email": "", "web": "", "src": "https://www.ivendor.com.tw/website/digital_column_detailed/6499", "verify": "第三方", "tags": ["桌上型 AI 工作站"]}, {"id": "13", "name": "瀚皇電腦科技有限公司", "priority": "低", "cat": "A", "catLabel": "南部在地", "city": "屏東縣", "south": "屏東市華正路187號", "type": "華碩商用經銷", "offer": "電腦組裝、維修、網路", "note": "屏東在地；無官網", "phone": "08-735-1668", "email": "", "web": "", "src": "https://trade.1111.com.tw/Comp_Info.aspx?vNo=171853", "verify": "第三方", "tags": ["整合・維運"]}, {"id": "14", "name": "吉康資訊有限公司", "priority": "低", "cat": "A", "catLabel": "南部在地", "city": "嘉義市", "south": "嘉義市興業東路318號", "type": "系統整合商", "offer": "系統整合、QNAP整合商", "note": "嘉義在地；資料少", "phone": "05-229-0001", "email": "", "web": "", "src": "https://www.qnap.com/en-us/where-to-buy/asia-oceania/taiwan/systems-integrator", "verify": "QNAP通路頁", "tags": ["整合・維運"]}, {"id": "15", "name": "凌華科技 ADLINK", "priority": "高", "cat": "B", "catLabel": "北部總部・南部有據點", "city": "桃園市（總部）", "south": "台南辦公室：台南市永康區中華路1-5號6樓A室", "type": "工業電腦／Edge AI", "offer": "Jetson Thor：DLAP-711、DLAP-701；Jetson Orin：DLAP-211/212/411；支援裝置端LLM推論", "note": "唯一官網查得到南部據點的IPC大廠", "phone": "台南 06-313-7768；總部 03-216-5088", "email": "https://www.adlinktech.com/tw/Contact_us_form", "web": "https://www.adlinktech.com/tw", "src": "https://www.adlinktech.com/tw/contactus", "verify": "官網", "tags": ["邊緣 AI 裝置"]}, {"id": "16", "name": "立達軟體科技 LeaderG", "priority": "高", "cat": "B", "catLabel": "北部總部・南部有據點", "city": "台北市（總部）", "south": "台南辦公室：台南市永康區中華路144-1號B1", "type": "AI工作站品牌", "offer": "W系列多GPU水冷AI工作站", "note": "有台南據點；電話請見官網聯絡頁", "phone": "", "email": "", "web": "https://www.leaderg.com/tw/", "src": "https://www.leaderg.com/tw/contact_us", "verify": "官網", "tags": ["桌上型 AI 工作站"]}, {"id": "17", "name": "技嘉科技 GIGABYTE", "priority": "高", "cat": "B", "catLabel": "北部總部・南部有據點", "city": "新北市（總部）", "south": "高雄服務中心：三民區長明街29號；台南服務中心：中西區青年路49號", "type": "品牌原廠", "offer": "AI TOP ATOM（GB10／128GB）、AI TOP 100 Z890、AI TOP 500 TRX50", "note": "南部為服務中心，業務需洽總部或經銷", "phone": "高雄 07-235-4340；台南 06-221-7374；總機 02-8912-4000", "email": "https://www.gigabyte.com/tw/Contact", "web": "https://www.gigabyte.com/tw", "src": "https://www.gigabyte.com/tw/AI-TOP-PC/GIGABYTE-AI-TOP-ATOM", "verify": "官網", "tags": ["桌上型 AI 工作站"]}, {"id": "18", "name": "微星科技 MSI", "priority": "中", "cat": "B", "catLabel": "北部總部・南部有據點", "city": "新北市（總部）", "south": "高雄服務中心：三民區建國二路41號", "type": "品牌原廠", "offer": "EdgeXpert MS-C931（DGX Spark平台，GB10／128GB）", "note": "官方商城可直接下單", "phone": "02-3234-5599 #1648（IPC業務）；0800-018-880", "email": "ipcsales@msi.com；https://ipc.msi.com/inquiry", "web": "https://tw.msi.com/", "src": "https://ipc.msi.com/product_detail/Industrial-Computer-Box-PC/AI-Supercomputer/EdgeXpert-MS-C931", "verify": "官網", "tags": ["桌上型 AI 工作站", "邊緣 AI 裝置"]}, {"id": "19", "name": "研華 Advantech", "priority": "中", "cat": "B", "catLabel": "北部總部・南部有據點", "city": "桃園市（總部）", "south": "高雄：電話07-229-3600（地址待確認）", "type": "工業電腦／Edge AI", "offer": "AIR-310小型邊緣AI推論（MXM GPU）；AIR-520地端GenAI（4U，較大）", "note": "高雄電話僅見於第三方黃頁，需致電確認", "phone": "0800-777-111；高雄 07-229-3600（第三方）", "email": "https://www.advantech.com/zh-tw/contact", "web": "https://www.advantech.com/zh-tw", "src": "https://www.advantech.com/en-us/products/932c8818-07cc-4917-89e9-7a678ddc029c/air-310/mod_227bd3dd-5c9a-4a18-b1b3-05f9ddc32dc9", "verify": "官網＋第三方", "tags": ["邊緣 AI 裝置"]}, {"id": "20", "name": "華碩電腦 ASUS", "priority": "高", "cat": "C", "catLabel": "北部原廠・透過經銷", "city": "台北市", "south": "南部經由華碩商用經銷（如鵬鈞、頂揚）", "type": "品牌原廠", "offer": "Ascent GX10（GB10／128GB，DGX OS）；ExpertCenter Pro ET900N G3（GB300桌上型）", "note": "電商有現貨；有中小企業專責窗口", "phone": "02-2894-3447 #28749（中小企業小組）", "email": "https://www.connect.asus.com/tw/ContactSales", "web": "https://www.asus.com/tw/business/", "src": "https://www.asus.com/tw/support/faq/1056142/", "verify": "官網", "tags": ["桌上型 AI 工作站"]}, {"id": "21", "name": "宏碁 Acer", "priority": "高", "cat": "C", "catLabel": "北部原廠・透過經銷", "city": "新北市", "south": "南部經由經銷商", "type": "品牌原廠", "offer": "Veriton GN100（GB10）；Veriton RA100（Ryzen AI Max+ 395，最高128GB）", "note": "RA100官方商城可購", "phone": "02-2696-3232；0800-258-222", "email": "https://www.acer.com/sales-inquiry/Registration.html", "web": "https://www.acer.com/tw-zh/business", "src": "https://www.acer.com/tw-zh/desktops-and-all-in-ones/veriton-workstations/veriton-gn100-ai-mini-workstation", "verify": "官網", "tags": ["桌上型 AI 工作站"]}, {"id": "22", "name": "安圖斯科技 Altos（宏碁集團）", "priority": "高", "cat": "C", "catLabel": "北部原廠・透過經銷", "city": "新北市", "south": "", "type": "品牌原廠", "offer": "BrainSphere GB10 F1（GB10／128GB／4TB自加密SSD，附aiGeni一鍵部署）", "note": "軟體整合度高，適合企業地端AI", "phone": "0800-258-811；02-2696-0933", "email": "AltosCare.Taiwan@altoscomputing.com", "web": "https://www.altoscomputing.com/zh-TW", "src": "https://www.altoscomputing.com/zh-TW/products/detail/GB10-F1", "verify": "官網", "tags": ["桌上型 AI 工作站", "整合・維運"]}, {"id": "23", "name": "群聯電子 Phison（aiDAPTIV+）", "priority": "高", "cat": "C", "catLabel": "北部原廠・透過經銷", "city": "苗栗縣", "south": "通路：台灣大哥大企業服務（全台）", "type": "方案商", "offer": "aiDAPTIV+地端LLM訓練／推論方案，涵蓋AI PC、工作站、伺服器；媒體報導教育訓練機約12萬元起", "note": "明確訴求中小企業地端LLM；價格為媒體報導", "phone": "台灣大企業服務 0809-000-809", "email": "https://www.phisonenterprise.com/where-to-buy/", "web": "https://www.phisonenterprise.com/pascari-aidaptiv/", "src": "https://www.bnext.com.tw/article/82099/phison-aidaptiv-plus", "verify": "官網＋媒體", "tags": ["桌上型 AI 工作站", "AI PC"]}, {"id": "24", "name": "麗臺科技 Leadtek", "priority": "中", "cat": "C", "catLabel": "北部原廠・透過經銷", "city": "新北市", "south": "", "type": "代理／品牌", "offer": "NVIDIA DGX Spark Founders Edition（GB10／128GB／4TB）", "note": "NVIDIA原廠創始版台灣代理", "phone": "02-8226-5800；0800-600-206", "email": "service@leadtek.com.tw", "web": "https://www.leadtek.com/", "src": "https://www.leadtek.com/eng/products/ai_hpc(37)/nvidia_dgx_spark_founders_edition(51035)/detail", "verify": "官網", "tags": ["桌上型 AI 工作站"]}, {"id": "25", "name": "華擎工業 ASRock Industrial", "priority": "中", "cat": "C", "catLabel": "北部原廠・透過經銷", "city": "台北市", "south": "", "type": "工業電腦", "offer": "AI BOX-A395（Ryzen AI Max+ 395，64/128GB，無風扇）＋AiKMSpark地端知識庫", "note": "工業級，適合7x24地端LLM推論", "phone": "02-5588-2688", "email": "Info_ipc@asrockind.com", "web": "https://www.asrockind.com/", "src": "https://www.asrockind.com/en-gb/AI%20BOX-A395", "verify": "官網", "tags": ["桌上型 AI 工作站", "邊緣 AI 裝置"]}, {"id": "26", "name": "威強電 IEI", "priority": "中", "cat": "C", "catLabel": "北部原廠・透過經銷", "city": "新北市", "south": "", "type": "工業電腦／Edge AI", "offer": "GAIA-5040A（LLM與視覺AI邊緣伺服器）、PUZZLE-9070、GAIA-NAGX/NNX", "note": "最貼近「地端LLM小型伺服器」", "phone": "02-8691-6798", "email": "sales@ieiworld.com", "web": "https://www.ieiworld.com/tw/", "src": "https://www.ctee.com.tw/news/20260601701836-431202", "verify": "官網＋媒體", "tags": ["GPU 伺服器", "邊緣 AI 裝置"]}, {"id": "27", "name": "輔信科技 Shuttle（原浩鑫）", "priority": "中", "cat": "C", "catLabel": "北部原廠・透過經銷", "city": "台北市", "south": "", "type": "品牌原廠", "offer": "NA20H（Ryzen AI 300）、NT20H/XH810G/DB860（Core Ultra 200）、Nano AI Mini PC G1", "note": "NPU型AI PC，適合端點AI", "phone": "02-8792-6168", "email": "web@tw.shuttle.com", "web": "https://tw.shuttle.com/", "src": "https://tw.shuttle.com/products/productsList?c=amd-ai-pc", "verify": "官網", "tags": ["AI PC"]}, {"id": "28", "name": "艾訊 Axiomtek", "priority": "中", "cat": "C", "catLabel": "北部原廠・透過經銷", "city": "新北市", "south": "最近據點：台中辦事處 04-2252-1030", "type": "工業電腦／Edge AI", "offer": "Jetson系列：AIE015-AT（Thor）、AIE900A-AO（AGX Orin）、AIE810-ONX等", "note": "可查南部經銷夥伴", "phone": "02-8646-2111", "email": "info@axiomtek.com.tw", "web": "https://www.axiomtek.com.tw/", "src": "https://www.axiomtek.com.tw/Default.aspx?MenuId=Products&FunctionId=ProductList&Cat=399", "verify": "官網", "tags": ["邊緣 AI 裝置"]}, {"id": "29", "name": "新漢 NEXCOM", "priority": "中", "cat": "C", "catLabel": "北部原廠・透過經銷", "city": "新北市", "south": "最近據點：台中 04-2249-1179", "type": "工業電腦／Edge AI", "offer": "AIEdge-X 80-NA/80-NX-S（Orin）、300-RTX30、310、500", "note": "", "phone": "02-8226-7786", "email": "sales@nexaiot.com", "web": "https://www.nexcom.com.tw/", "src": "https://www.nexcom.com.tw/Products/multi-media-solutions/ai-edge-computer/nvidia-solutions", "verify": "官網", "tags": ["邊緣 AI 裝置"]}, {"id": "30", "name": "精英電腦 ECS", "priority": "低", "cat": "C", "catLabel": "北部原廠・透過經銷", "city": "台北市", "south": "", "type": "品牌原廠", "offer": "LIVA Z11 Plus（Core Ultra，最高96GB）、LIVA Z8 Plus（Ryzen AI）", "note": "NPU型mini PC；電話需確認", "phone": "02-2162-1177（第三方）", "email": "https://www.ecs.com.tw/tw/about/contact", "web": "https://www.ecs.com.tw/tw/", "src": "https://www.ecs.com.tw/en/news-detail/202505-1", "verify": "官網＋第三方", "tags": ["AI PC"]}, {"id": "31", "name": "宸曜科技 Neousys", "priority": "低", "cat": "C", "catLabel": "北部原廠・透過經銷", "city": "新北市", "south": "最近據點：台中分公司", "type": "工業電腦／Edge AI", "offer": "NRU-52S（Jetson）、POC-200 GPU邊緣運算", "note": "強固寬溫，偏工業現場", "phone": "02-2223-6182", "email": "sales@neousys-tech.com", "web": "https://www.neousys-tech.com/tw/", "src": "https://www.neousys-tech.com/tw/product/processor/gpu-computing/nru-52s-nvidia-jason-nx-edge-ai-computer", "verify": "官網", "tags": ["邊緣 AI 裝置"]}, {"id": "32", "name": "研揚科技 AAEON（華碩集團）", "priority": "低", "cat": "C", "catLabel": "北部原廠・透過經銷", "city": "新北市", "south": "", "type": "工業電腦／Edge AI", "offer": "BOXER-8658AI（Jetson Orin NX）、BOXER-8223AI", "note": "官網部分頁面無法讀取", "phone": "", "email": "https://www.aaeon.com/tw/contact/", "web": "https://www.aaeon.com/tw", "src": "https://www.aaeon.com/tw/product/detail/ai-edge-solutions-boxer-8658ai", "verify": "官網", "tags": ["邊緣 AI 裝置"]}, {"id": "33", "name": "安提國際 Aetina（宜鼎集團）", "priority": "低", "cat": "C", "catLabel": "北部原廠・透過經銷", "city": "新北市", "south": "", "type": "工業電腦／Edge AI", "offer": "DeviceEdge Jetson邊緣AI裝置、Jetson Thor平台", "note": "", "phone": "02-7709-2568", "email": "https://www.aetina.com/ch/about-inquiry.php", "web": "https://www.aetina.com/ch/", "src": "https://www.aetina.com/ch/products-list.php?t=353", "verify": "官網", "tags": ["邊緣 AI 裝置"]}], "gpus": [{"name": "NVIDIA H100 NVL", "brand": "NVIDIA", "kind": "資料中心", "tier": "頂級", "index": 100, "mem": 94, "memType": "HBM3", "size": "70B 級", "size4": "70B 以上", "priceNtd": 1132000, "price": "113 萬", "price4": "453 萬", "priceBasis": "美國價換算（匯率 32）", "cpRank": 9, "use": "最強；94GB HBM3＋最高頻寬，適合70B級LLM推論與微調", "priceNote": "美國需出口合規文件；另有翻新品約US$29,900", "twSource": "—（台灣無可靠公開牌價，需向SI詢價）", "fp16": 835.5, "bw": 3900, "watt": 400, "cooling": "Passive", "width": "Double", "estimated": false, "specUrl": "https://www.nvidia.com/en-us/data-center/h100/", "priceUrl": "https://www.newegg.com/p/pl?d=nvidia+h100+nvl"}, {"name": "NVIDIA H100 PCIe", "brand": "NVIDIA", "kind": "資料中心", "tier": "頂級", "index": 91, "mem": 80, "memType": "HBM2e", "size": "70B 級", "size4": "70B 以上", "priceNtd": 1390000, "price": "139 萬", "price4": "556 萬", "priceBasis": "台灣通路標價", "cpRank": 12, "use": "訓練／微調主力，FP64亦強", "priceNote": "台灣價為2024年資料，現價需詢價", "twSource": "PChome 24h（2024-07，媒體報導，已售完）", "fp16": 756.5, "bw": 2000, "watt": 350, "cooling": "Passive", "width": "Double", "estimated": false, "specUrl": "https://www.pny.com/File%20Library/Company/Support/Product%20Brochures/NVIDIA%20Data%20Center%20GPUs/nvidia-h100-datasheet.pdf", "priceUrl": "https://store.supermicro.com/us_en/supermicro-nvidia-h100-pcie-gen-5-0-x16-graphics-card-gpu-nvh100-80.html"}, {"name": "NVIDIA RTX PRO 6000 Blackwell Max-Q", "brand": "NVIDIA", "kind": "工作站", "tier": "高階", "index": 53, "mem": 96, "memType": "GDDR7", "size": "70B 級", "size4": "70B 以上", "priceNtd": 475000, "price": "48 萬", "price4": "190 萬", "priceBasis": "台灣通路標價", "cpRank": 5, "use": "記憶體最大(96GB)，支援FP4；地端LLM推論性價比高", "priceNote": "2025上市價US$8,565，2026受GDDR7缺貨上漲近一倍", "twSource": "PChome（麗臺 Max-Q）", "fp16": 438.9, "bw": 1792, "watt": 300, "cooling": "Active", "width": "Double", "estimated": false, "specUrl": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/quadro-product-literature/NVIDIA-RTX-Blackwell-PRO-GPU-Architecture-v1.0.pdf", "priceUrl": "https://www.bhphotovideo.com/c/product/1898469-REG/pny_vcnrtxpro6000bq_pb_nvidia_rtx_pro_6000.html"}, {"name": "NVIDIA L40S", "brand": "NVIDIA", "kind": "資料中心", "tier": "高階", "index": 43, "mem": 48, "memType": "GDDR6", "size": "30B 級", "size4": "70B 以上", "priceNtd": 336000, "price": "34 萬", "price4": "134 萬", "priceBasis": "美國價換算（匯率 32）", "cpRank": 2, "use": "推論＋影像／渲染兼用，FP8推論效率佳", "priceNote": "二手約US$6,900–9,000", "twSource": "—（露天叫價NT$50–61.5萬，偏高不採用）", "fp16": 362, "bw": 864, "watt": 350, "cooling": "Passive", "width": "Double", "estimated": false, "specUrl": "https://www.nvidia.com/en-us/data-center/l40s/", "priceUrl": "https://www.serversupply.com/GPU/GDDR6/48GB/NVIDIA/L40S_395278.htm"}, {"name": "NVIDIA A100 PCIe 80GB", "brand": "NVIDIA", "kind": "資料中心", "tier": "中階", "index": 37, "mem": 80, "memType": "HBM2e", "size": "70B 級", "size4": "70B 以上", "priceNtd": 472000, "price": "47 萬", "price4": "189 萬", "priceBasis": "美國價換算（匯率 32）", "cpRank": 10, "use": "上一代主力；不支援FP8，FP64佳", "priceNote": "已停產，市場以二手為主", "twSource": "—（拍賣叫價NT$46.2–73.5萬，不採用）", "fp16": 312, "bw": 1935, "watt": 300, "cooling": "Passive", "width": "Double", "estimated": false, "specUrl": "https://www.nvidia.com/en-us/data-center/a100/", "priceUrl": "https://www.exxactcorp.com/NVIDIA-900-21001-0020-000-E4581872"}, {"name": "NVIDIA RTX PRO 5000 Blackwell", "brand": "NVIDIA", "kind": "工作站", "tier": "中階", "index": 31, "mem": 48, "memType": "GDDR7", "size": "30B 級", "size4": "70B 以上", "priceNtd": 331000, "price": "33 萬", "price4": "132 萬", "priceBasis": "台灣通路標價", "cpRank": 8, "use": "48GB(另有72GB版)；中階LLM推論", "priceNote": "上市價約US$4,199；72GB版台灣約NT$27–37萬", "twSource": "PChome（麗臺 48GB）", "fp16": 258, "bw": 1344, "watt": 300, "cooling": "Active", "width": "Double", "estimated": true, "specUrl": "https://www.nvidia.com/content/dam/en-zz/Solutions/products/workstations/professional-desktop-gpus/rtx-pro-5000-blackwell/workstation-datasheet-blackwell-rtx-pro-5000-gtc25-spring-nvidia-3658700.pdf", "priceUrl": "https://www.bhphotovideo.com/c/product/1898513-REG/pny_vcnrtxpro5000b_pb_nvidia_rtx_pro_5000.html"}, {"name": "NVIDIA RTX PRO 4500 Blackwell", "brand": "NVIDIA", "kind": "工作站", "tier": "中階", "index": 24, "mem": 32, "memType": "GDDR7", "size": "14B～30B 級", "size4": "70B 級", "priceNtd": 189000, "price": "19 萬", "price4": "76 萬", "priceBasis": "台灣通路標價", "cpRank": 3, "use": "32GB；中小模型推論、RAG", "priceNote": "官方未公布MSRP", "twSource": "PChome（南紡購物；麗臺另有NT$13.3–19.2萬）", "fp16": 202, "bw": 896, "watt": 200, "cooling": "Active", "width": "Double", "estimated": true, "specUrl": "https://www.nvidia.com/content/dam/en-zz/Solutions/data-center/rtx-pro-4500-blackwell/workstation-datasheet-blackwell-rtx-pro-4500-we-nvidia-us-5108623-web.pdf", "priceUrl": "https://www.bhphotovideo.com/c/product/1898512-REG/pny_vcnrtxpro4500b_pb_nvidia_rtx_pro_4500.html"}, {"name": "NVIDIA L40", "brand": "NVIDIA", "kind": "資料中心", "tier": "中階", "index": 22, "mem": 48, "memType": "GDDR6", "size": "30B 級", "size4": "70B 以上", "priceNtd": 298000, "price": "30 萬", "price4": "119 萬", "priceBasis": "美國價換算（匯率 32）", "cpRank": 11, "use": "偏視覺運算／渲染，AI算力約L40S一半", "priceNote": "二手約US$6,290", "twSource": "—（露天叫價NT$32.9萬，不採用）", "fp16": 181, "bw": 864, "watt": 300, "cooling": "Passive", "width": "Double", "estimated": false, "specUrl": "https://www.nvidia.com/content/dam/en-zz/Solutions/design-visualization/support-guide/NVIDIA-L40-Datasheet-January-2023.pdf", "priceUrl": "https://buydirectny.com/products/nvidia-l40-48gb-data-center-graphics-card"}, {"name": "AMD Instinct MI210", "brand": "AMD", "kind": "資料中心", "tier": "中階", "index": 22, "mem": 64, "memType": "HBM2e", "size": "30B 級", "size4": "70B 以上", "priceNtd": 230000, "price": "23 萬", "price4": "92 萬", "priceBasis": "美國價換算（匯率 32）", "cpRank": 7, "use": "HPC(FP64)強；ROCm生態，非CUDA", "priceNote": "供貨少；二手約US$4,000–4,400", "twSource": "—（台灣無可靠公開牌價）", "fp16": 181, "bw": 1600, "watt": 300, "cooling": "Passive", "width": "Double", "estimated": false, "specUrl": "https://www.amd.com/en/products/accelerators/instinct/mi200/mi210.html", "priceUrl": "https://www.newegg.com/p/N82E16888897004"}, {"name": "NVIDIA RTX PRO 4000 Blackwell", "brand": "NVIDIA", "kind": "工作站", "tier": "入門", "index": 19, "mem": 24, "memType": "GDDR7", "size": "7B～14B 級", "size4": "70B 級", "priceNtd": 126500, "price": "13 萬", "price4": "51 萬", "priceBasis": "台灣通路標價", "cpRank": 1, "use": "單槽；7B–14B小模型推論", "priceNote": "上市價約US$1,546", "twSource": "PChome／momo（麗臺）", "fp16": 161, "bw": 672, "watt": 145, "cooling": "Active", "width": "Single", "estimated": true, "specUrl": "https://www.nvidia.com/en-us/products/workstations/professional-desktop-gpus/rtx-pro-4000/", "priceUrl": "https://www.bhphotovideo.com/c/product/1898511-REG/pny_vcnrtxpro4000b_pb_nvidia_rtx_pro_4000.html"}, {"name": "NVIDIA L4", "brand": "NVIDIA", "kind": "資料中心", "tier": "入門", "index": 14, "mem": 24, "memType": "GDDR6", "size": "7B～14B 級", "size4": "70B 級", "priceNtd": 139000, "price": "14 萬", "price4": "56 萬", "priceBasis": "美國價換算（匯率 32）", "cpRank": 6, "use": "僅72W，低功耗影像AI／小模型推論", "priceNote": "Dell OEM版可達US$7,999", "twSource": "—（PChome有商品頁但未顯示價格）", "fp16": 121, "bw": 300, "watt": 72, "cooling": "Passive", "width": "Single", "estimated": false, "specUrl": "https://www.nvidia.com/en-us/data-center/l4/", "priceUrl": "https://www.serversupply.com/GPU/GDDR6/24GB/NVIDIA/900-2G193-0000-000_395862.htm"}, {"name": "NVIDIA RTX PRO 2000 Blackwell", "brand": "NVIDIA", "kind": "工作站", "tier": "入門", "index": 8, "mem": 16, "memType": "GDDR7", "size": "7B 以下", "size4": "30B 級", "priceNtd": 67500, "price": "6.8 萬", "price4": "27 萬", "priceBasis": "台灣通路標價", "cpRank": 4, "use": "入門級；開發測試、輕量推論", "priceNote": "上市價約US$722", "twSource": "PChome（麗臺）", "fp16": 68, "bw": 288, "watt": 70, "cooling": "Active", "width": "Double", "estimated": true, "specUrl": "https://images.nvidia.com/aem-dam/Solutions/design-visualization/quadro-product-literature/workstation-datasheet-blackwell-rtx-pro-2000-nvidia-us-4016661.pdf", "priceUrl": "https://www.bhphotovideo.com/c/product/1938754-REG/pny_vcnrtxpro2000b_pb_nvidia_rtx_pro_2000.html"}]};
+
+const TERMS = [
+  ["GPU","顯示卡","AI 運算的主力零件。AI 伺服器的等級，主要看裝了哪一種、幾張 GPU。"],
+  ["GPU 記憶體","GB","決定「放得下多大的模型」。記憶體不夠，模型根本跑不起來，是選卡時最先看的數字。"],
+  ["模型規模","7B／70B","B＝十億個參數。7B 是小模型（一般問答），30B 中型，70B 是大模型（品質較好、需要大記憶體）。"],
+  ["算力","TFLOPS","每秒可以做幾兆次運算，數字越大、回答越快。本頁換算成以 H100 NVL 為 100 分的相對分數。"],
+  ["量化","4-bit／8-bit","把模型「壓縮」，讓它用更少記憶體就能跑，品質只會小幅下降。地端部署幾乎都會用。"],
+  ["推論 vs 訓練","","推論＝使用已經做好的模型（回答問題）；訓練或微調＝教模型新東西，需要的算力和記憶體多很多。多數企業只需要推論。"],
+  ["地端 LLM","On-premise","把大型語言模型裝在公司自己的機器上，資料不出公司。資安、法遵要求高的客戶最在意這點。"],
+  ["RAG","","讓 AI 先查公司內部文件再回答，是企業導入 AI 最常見的第一個應用。"],
+  ["資料中心卡 vs 工作站卡","","資料中心卡（H100、L40S、L4）沒有風扇，要裝在專業伺服器機房；工作站卡（RTX PRO 系列）自帶風扇，放辦公室也可以。"],
+  ["HBM vs GDDR","記憶體種類","HBM 速度快很多、也貴很多，用在頂級卡；GDDR 用在工作站卡，性價比較高。"],
+  ["桌上型 AI 工作站","GB10／DGX Spark","像一台小主機的 AI 電腦，內建 128GB 記憶體，可跑 70B 級模型推論，適合小團隊試用地端 AI。"],
+  ["邊緣 AI","Jetson","體積小、耗電低的 AI 裝置，裝在工廠產線、攝影機旁邊，就地做影像辨識。"],
+  ["系統整合商","SI","幫客戶挑選、組裝、安裝並維護設備的廠商。南部客戶多半透過 SI 採購品牌原廠的 AI 設備。"],
+  ["CUDA vs ROCm","","CUDA 是 NVIDIA 的軟體環境，大多數 AI 軟體都支援；ROCm 是 AMD 的，選 AMD 卡前要先確認軟體能不能用。"],
+  ["出口管制","","H100 等高階卡受美國出口規範，購買需要合規文件，交期也可能較長。"],
+];
+
+const $ = (s, el=document) => el.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const TIERS = ["頂級","高階","中階","入門"];
+const state = { tier:"", sort:"power", q:"", cat:"", tag:"", prio:"" };
+
+function chipRow(el, items, key, onPick){
+  el.innerHTML = items.map(([v,l]) => `<button type="button" class="chip" data-v="${esc(v)}" aria-pressed="${state[key]===v}">${esc(l)}</button>`).join("");
+  el.onclick = e => { const b = e.target.closest(".chip"); if(!b) return; state[key] = b.dataset.v; onPick(); };
+}
+
+/* ---------- GPU ---------- */
+function renderGpu(){
+  chipRow($("#tier-chips"), [["","全部"], ...TIERS.map(t=>[t,t])], "tier", renderGpu);
+  let list = DATA.gpus.filter(g => !state.tier || g.tier === state.tier);
+  const by = { power:(a,b)=>b.index-a.index, price:(a,b)=>a.priceNtd-b.priceNtd, cp:(a,b)=>a.cpRank-b.cpRank }[state.sort];
+  list = list.slice().sort(by);
+  $("#gpu-count").textContent = `顯示 ${list.length} / ${DATA.gpus.length} 款`;
+  const n = DATA.gpus.length;
+  $("#gpu-list").innerHTML = list.map(g => `
+    <article class="gpu">
+      <div class="gpu-id">
+        <h3 class="gpu-name">${esc(g.name)}</h3>
+        <span class="gpu-sub">${esc(g.brand)} · ${esc(g.kind)}卡${g.kind==="資料中心"?"（需伺服器機房）":"（辦公室可用）"}</span>
+        <span class="tier" data-t="${esc(g.tier)}">${esc(g.tier)}</span>
+        <div class="meter" aria-label="相對算力 ${g.index} 分">
+          <div class="meter-top"><span>相對算力</span><b>${esc(g.index)}</b></div>
+          <div class="bar"><i style="width:${Math.max(2,Math.min(100,g.index))}%"></i></div>
+        </div>
+      </div>
+      <div class="gpu-body">
+        <div class="facts">
+          <div class="fact"><span class="k">單卡可跑模型</span><span class="v">${esc(g.size)}</span><span class="s">記憶體 ${esc(g.mem)}GB</span></div>
+          <div class="fact"><span class="k">參考價（每張）</span><span class="v">約 ${esc(g.price)}</span><span class="s">${esc(g.priceBasis)}</span></div>
+          <div class="fact"><span class="k">4 卡整機</span><span class="v">約 ${esc(g.price4)}</span><span class="s">可跑 ${esc(g.size4)}・CP 值第 ${esc(g.cpRank)}／${n}</span></div>
+        </div>
+        <p class="use"><b>適合</b>${esc(g.use)}</p>
+        ${g.priceNote ? `<p class="warnline">注意：${esc(g.priceNote)}</p>` : ""}
+      </div>
+      <details class="more">
+        <summary>詳細規格與來源</summary>
+        <div class="spec">
+          <div><span>FP16 算力</span><span>${esc(g.fp16)} TFLOPS${g.estimated?' <span class="est">推估</span>':''}</span></div>
+          <div><span>記憶體</span><span>${esc(g.mem)}GB ${esc(g.memType)}</span></div>
+          <div><span>記憶體頻寬</span><span>${esc(g.bw)} GB/s</span></div>
+          <div><span>最大功耗</span><span>${esc(g.watt)} W</span></div>
+          <div><span>散熱／寬度</span><span>${esc(g.cooling)} / ${esc(g.width)}</span></div>
+        </div>
+        <div class="links">
+          ${g.specUrl?`<a href="${esc(g.specUrl)}" target="_blank" rel="noopener">官方規格 ↗</a>`:""}
+          ${g.priceUrl?`<a href="${esc(g.priceUrl)}" target="_blank" rel="noopener">美國售價來源 ↗</a>`:""}
+          ${g.twSource?`<span>台灣價格：${esc(g.twSource)}</span>`:""}
+        </div>
+      </details>
+    </article>`).join("");
+}
+
+function renderWhom(){
+  const list = DATA.suppliers.filter(s => s.tags.includes("GPU 伺服器") && s.cat !== "C");
+  $("#whom").innerHTML = list.map(s => `<button type="button" class="chip" data-name="${esc(s.name)}">${esc(shortName(s.name))}・${esc(s.city.replace(/（.*）/,""))}</button>`).join("");
+  $("#whom").onclick = e => { const b = e.target.closest(".chip"); if(!b) return;
+    Object.assign(state,{q:shortName(b.dataset.name),cat:"",tag:"",prio:""}); $("#v-q").value = state.q; $("#v-prio").value=""; go("vendors"); };
+}
+const shortName = n => n.replace(/(股份有限公司|有限公司|企業有限公司).*$/,"").replace(/（.*$/,"").trim();
+
+/* ---------- Vendors ---------- */
+const CATS = [["","全部"],["A","南部在地"],["B","北部總部・南部有據點"],["C","北部原廠・透過經銷"]];
+const TAGS = ["桌上型 AI 工作站","GPU 伺服器","邊緣 AI 裝置","AI PC","整合・維運","租賃"];
+const PRANK = {"高":0,"中":1,"低":2};
+
+function renderVendors(){
+  chipRow($("#cat-chips"), CATS, "cat", renderVendors);
+  chipRow($("#tag-chips"), [["","全部"], ...TAGS.map(t=>[t,t])], "tag", renderVendors);
+  const q = state.q.trim().toLowerCase();
+  const list = DATA.suppliers.filter(s =>
+    (!state.cat || s.cat === state.cat) &&
+    (!state.tag || s.tags.includes(state.tag)) &&
+    (!state.prio || state.prio.includes(s.priority)) &&
+    (!q || [s.name,s.city,s.offer,s.type,s.south,s.note].join(" ").toLowerCase().includes(q))
+  ).sort((a,b) => (a.cat>b.cat)-(a.cat<b.cat) || PRANK[a.priority]-PRANK[b.priority]);
+  $("#v-count").textContent = `顯示 ${list.length} / ${DATA.suppliers.length} 家`;
+  $("#v-grid").innerHTML = list.length ? list.map(vCard).join("") : `<div class="empty">沒有符合條件的廠商，試著清除篩選或換個關鍵字。</div>`;
+}
+function vCard(s){
+  const email = s.email ? (/^https?:/.test(s.email)
+      ? `<a href="${esc(s.email)}" target="_blank" rel="noopener">線上聯絡表單 ↗</a>`
+      : `<span class="val">${esc(s.email)}</span><button type="button" class="copy" data-copy="${esc(s.email)}">複製</button>`) : "";
+  return `<article class="vcard">
+    <div class="v-head">
+      <div><h3 class="v-name">${esc(s.name)}</h3><div class="v-where">${esc(s.city)} · ${esc(s.type)} · ${esc(s.catLabel)}</div></div>
+      <span class="prio" data-p="${esc(s.priority)}" title="推薦度">推薦 ${esc(s.priority)}</span>
+    </div>
+    ${s.tags.length?`<div class="tags">${s.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>`:""}
+    ${s.offer?`<p><span class="lab">能提供</span>${esc(s.offer)}</p>`:""}
+    ${s.south?`<p><span class="lab">南部據點／地址</span>${esc(s.south)}</p>`:""}
+    ${s.note?`<p class="note"><span class="lab">注意</span>${esc(s.note)}</p>`:""}
+    <div class="contact">
+      ${s.phone?`<div class="crow"><span class="lab">電話</span><span class="val">${esc(s.phone)}</span><button type="button" class="copy" data-copy="${esc(s.phone)}">複製</button></div>`:""}
+      ${email?`<div class="crow"><span class="lab">聯絡</span>${email}</div>`:""}
+      <div class="crow">${s.web?`<a href="${esc(s.web)}" target="_blank" rel="noopener">官網 ↗</a>`:`<span class="src">無官網</span>`}
+        ${s.src?`<a class="src" href="${esc(s.src)}" target="_blank" rel="noopener">資料來源 ↗</a>`:""}
+        ${s.verify?`<span class="src">驗證：${esc(s.verify)}</span>`:""}</div>
+    </div>
+  </article>`;
+}
+
+/* ---------- Terms / meta ---------- */
+function renderStatic(){
+  $("#terms").innerHTML = TERMS.map(([t,m,d]) => `<div class="term"><dt>${esc(t)}${m?`<span class="mono">${esc(m)}</span>`:""}</dt><dd>${esc(d)}</dd></div>`).join("");
+  const south = DATA.suppliers.filter(s=>s.cat==="A").length;
+  $("#meta").innerHTML = `<span>資料查證日 <b>${esc(DATA.updated)}</b></span><span>廠商 <b>${DATA.suppliers.length}</b> 家（南部在地 <b>${south}</b>）</span><span>GPU <b>${DATA.gpus.length}</b> 款</span>`;
+  $("#n-gpu").textContent = DATA.gpus.length; $("#n-ven").textContent = DATA.suppliers.length;
+  $("#srv-m").textContent = DATA.server.model;
+  $("#srv-d").textContent = DATA.server.desc + "。下方 GPU 都是原廠列為可搭配這台的型號。";
+  $("#foot").innerHTML = `資料查證日 ${esc(DATA.updated)}。資料取自各廠官網、經濟部商工登記、品牌經銷名冊、公開通路與媒體報導；查不到的欄位留空，未推測填入。本頁由主檔 Excel 自動產生，內容有誤請通知資料維護者修正主檔。`;
+}
+
+/* ---------- tabs ---------- */
+function go(tab){
+  ["gpu","vendors","terms"].forEach(t => {
+    $("#p-"+t).hidden = t !== tab;
+    $("#tab-"+t).setAttribute("aria-selected", t === tab);
+  });
+  if(tab==="vendors") renderVendors();
+  if(location.hash !== "#"+tab) history.replaceState(null,"","#"+tab);
+  $("nav.tabs").scrollIntoView({block:"start"});
+}
+document.querySelectorAll(".tab").forEach(b => b.onclick = () => go(b.dataset.tab));
+document.querySelectorAll(".ask-btn").forEach(b => b.onclick = () => {
+  const k = b.dataset.go;
+  if(k==="gpu"){ state.tier=""; renderGpu(); go("gpu"); return; }
+  Object.assign(state,{q:"",cat:"",prio:"",tag: k==="ws"?"桌上型 AI 工作站":"邊緣 AI 裝置"}); $("#v-q").value=""; $("#v-prio").value="";
+  go("vendors");
+});
+$("#gpu-sort").onchange = e => { state.sort = e.target.value; renderGpu(); };
+$("#v-q").oninput = e => { state.q = e.target.value; renderVendors(); };
+$("#v-prio").onchange = e => { state.prio = e.target.value; renderVendors(); };
+document.addEventListener("click", async e => {
+  const b = e.target.closest(".copy"); if(!b) return;
+  try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = "已複製"; }
+  catch { const v = b.previousElementSibling; if(v){ const r=document.createRange(); r.selectNodeContents(v); const s=getSelection(); s.removeAllRanges(); s.addRange(r);} b.textContent = "已選取"; }
+  setTimeout(()=> b.textContent = "複製", 1500);
+});
+
+renderStatic(); renderGpu(); renderWhom(); renderVendors();
+const h = location.hash.slice(1);
+["gpu","vendors","terms"].includes(h) ? go(h) : (["gpu","vendors","terms"].forEach(t=>{$("#p-"+t).hidden=t!=="gpu";$("#tab-"+t).setAttribute("aria-selected",t==="gpu");}));
+</script>
