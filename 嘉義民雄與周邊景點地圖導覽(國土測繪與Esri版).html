@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>嘉義民雄與周邊精選景點地圖導覽</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #2ecc71;
+            --accent-hover: #27ae60;
+            --bg-light: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang TC", "Microsoft JhengHei", sans-serif;
+            color: var(--text-main);
+            background-color: var(--bg-light);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            z-index: 1000;
+        }
+
+        header h1 {
+            font-size: 1.2rem;
+            color: var(--primary);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        header .subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .main-layout {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 60px);
+            overflow: hidden;
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            width: 420px;
+            min-width: 340px;
+            max-width: 450px;
+            background: #ffffff;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            z-index: 900;
+        }
+
+        .sidebar-header {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            background: #fafbfc;
+        }
+
+        .filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .filter-tag {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            border: 1px solid var(--border-color);
+            background: #ffffff;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-muted);
+        }
+
+        .filter-tag:hover, .filter-tag.active {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+
+        .spots-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .spot-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px 16px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .spot-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-color: #cbd5e1;
+        }
+
+        .spot-card.selected {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .card-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge-index {
+            background: #e2e8f0;
+            color: #475569;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .spot-card.selected .badge-index {
+            background: #3b82f6;
+            color: #ffffff;
+        }
+
+        .category-tag {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .category-tag.觀光工廠 { background: #fef3c7; color: #b45309; }
+        .category-tag.主題農場 { background: #dcfce7; color: #15803d; }
+        .category-tag.校園風景 { background: #e0e7ff; color: #4338ca; }
+        .category-tag.藝文空間 { background: #f3e8ff; color: #7e22ce; }
+        .category-tag.歐風城堡 { background: #fce7f3; color: #be185d; }
+        .category-tag.自然公園 { background: #ccfbf1; color: #0f766e; }
+        .category-tag.咖啡廳 { background: #ffedd5; color: #c2410c; }
+
+        .card-desc {
+            font-size: 0.875rem;
+            color: #475569;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn-locate {
+            font-size: 0.8rem;
+            padding: 6px 12px;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            color: #334155;
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+
+        .btn-locate:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .btn-map-link {
+            font-size: 0.8rem;
+            padding: 6px 12px;
+            background: var(--accent);
+            border: 1px solid var(--accent);
+            border-radius: 6px;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: background 0.2s;
+            margin-left: auto;
+        }
+
+        .btn-map-link:hover {
+            background: var(--accent-hover);
+        }
+
+        /* Map panel */
+        #map-container {
+            flex: 1;
+            height: 100%;
+            position: relative;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Custom marker icon styling */
+        .custom-pin {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ef4444;
+            color: white;
+            font-weight: bold;
+            font-size: 13px;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            border: 2px solid white;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+            width: 32px !important;
+            height: 32px !important;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .custom-pin span {
+            transform: rotate(45deg);
+        }
+
+        .custom-pin.selected-pin {
+            background: #2563eb;
+            transform: rotate(-45deg) scale(1.2);
+            z-index: 1000 !important;
+        }
+
+        /* Popup styling */
+        .leaflet-popup-content-wrapper {
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            padding: 4px;
+        }
+
+        .popup-content {
+            padding: 4px;
+        }
+
+        .popup-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+
+        .popup-desc {
+            font-size: 0.85rem;
+            color: #475569;
+            line-height: 1.45;
+            margin-bottom: 10px;
+        }
+
+        .popup-link {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* Responsive toggle for mobile */
+        .mobile-tabs {
+            display: none;
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .tab-btn.active {
+            color: #2563eb;
+            border-bottom: 2px solid #2563eb;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-tabs {
+                display: flex;
+            }
+
+            .main-layout {
+                position: relative;
+            }
+
+            .sidebar {
+                width: 100%;
+                max-width: none;
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                display: none;
+            }
+
+            .sidebar.mobile-active {
+                display: flex;
+            }
+
+            #map-container {
+                display: block;
+            }
+
+            #map-container.mobile-hidden {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1>🗺️ 嘉義民雄與周邊精選景點導覽地圖</h1>
+            <div class="subtitle">共收錄 10 處在地特色景點與周邊名勝</div>
+        </div>
+    </header>
+
+    <div class="mobile-tabs">
+        <button class="tab-btn active" id="tab-map" onclick="switchMobileTab('map')">地圖模式</button>
+        <button class="tab-btn" id="tab-list" onclick="switchMobileTab('list')">景點清單</button>
+    </div>
+
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">類別篩選</div>
+                <div class="filter-tags" id="filter-tags">
+                    <span class="filter-tag active" data-category="ALL" onclick="filterCategory('ALL')">全部 (10)</span>
+                    <span class="filter-tag" data-category="觀光工廠" onclick="filterCategory('觀光工廠')">觀光工廠</span>
+                    <span class="filter-tag" data-category="主題農場" onclick="filterCategory('主題農場')">主題農場</span>
+                    <span class="filter-tag" data-category="校園風景" onclick="filterCategory('校園風景')">校園風景</span>
+                    <span class="filter-tag" data-category="藝文空間" onclick="filterCategory('藝文空間')">藝文空間</span>
+                    <span class="filter-tag" data-category="歐風城堡" onclick="filterCategory('歐風城堡')">歐風城堡</span>
+                    <span class="filter-tag" data-category="自然公園" onclick="filterCategory('自然公園')">自然公園</span>
+                    <span class="filter-tag" data-category="咖啡廳" onclick="filterCategory('咖啡廳')">咖啡廳</span>
+                </div>
+            </div>
+
+            <div class="spots-list" id="spots-list">
+                <!-- Cards populated by JS -->
+            </div>
+        </aside>
+
+        <!-- Map -->
+        <div id="map-container">
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script>
+        const spots = [
+            {
+                id: 1,
+                name: "旺萊山鳳梨文化園區",
+                category: "觀光工廠",
+                lat: 23.55306,
+                lng: 120.480322,
+                desc: "以鳳梨為主題的休閒園區，可以欣賞大片鳳梨田，入園免門票還能免費品嚐在地知名的鳳梨酥，是採買伴手禮的好去處。",
+                mapUrl: "https://www.google.com/maps/search/?api=1&query=旺萊山鳳梨文化園區"
+            },
+            {
+                id: 2,
+                name: "民雄金桔觀光工廠",
+                category: "觀光工廠",
+                lat: 23.5582334,
+                lng: 120.4770784,
+                desc: "園區被綠意盎然的森林環境包圍，不僅能吸收金桔的相關知識，還提供豐富的試吃品與適合小孩遊玩的設施，充滿自然氣息。",
+                mapUrl: "https://www.google.com/maps/search/?api=1&query=民雄金桔觀光工廠"
+            },
+            {
+                id: 3,
+                name: "三隻小豬觀光農場",
+                category: "主題農場",
+                lat: 23.5552409,
+                lng: 120.412343,
+                desc: "擁有充滿趣味的童話故事造景與哈比屋，園區內有水豚、梅花鹿等多種小動物可以近距離互動，非常適合親子與情侶造訪。",
+                mapUrl: "https://www.google.com/maps/search/?api=1&query=三隻小豬觀光農場"
+            },
+            {
+                id: 4,
+                name: "國立中正大學",
+                category: "校園風景",
+                lat: 23.558577,
+                lng: 120.4718534,
+                desc: "校地廣闊且綠意寧靜，有著著名的金字塔造型行政大樓。完善的步道與湖畔非常適合帶本書找個角落安靜閱讀或散步放鬆。",
+                mapUrl: "https://www.google.com/maps/search/?api=1&query=國立中正大學"
+            },
+            {
+                id: 5,
+                name: "嘉義縣表演藝術中心",
+                category: "藝文空間",
+                lat: 23.5441121,
+                lng: 120.4320576,
+                desc: "古色古香的閩南紅磚建築群，結合了療癒的荷花水景湖畔與幽靜庭院。在自然白噪音中漫步，非常有助於舒緩身心與尋找靈感。",
+                mapUrl: "https://www.google.com/maps/search/?api=1&query=嘉義縣表演藝術中心"
+            },
+            {
+                id: 6,
+                name: "佐登妮絲城堡",
+                category: "歐風城堡",
+                lat: 23.5843184,
+                lng: 120.5070594,
+                desc: "位於大埔美園區，以華麗的巴洛克風格打造，號稱「台版凡爾賽宮」。純白羅馬柱與壯觀噴泉，是絕佳的歐風攝影打卡點。",
+                mapUrl: "https://www.google.com/maps/search/?api=1&query=佐登妮絲城堡"
+            },
+            {
+                id: 7,
+                name: "蓋婭莊園",
+                category: "歐風城堡",
+                lat: 23.5922719,
+                lng: 120.5242839,
+                desc: "主打純白希臘風情與浪漫唯美的神話主題。庭園充滿南法鄉村慵懶氛圍，並設有採光極佳的玻璃屋咖啡館，充滿大自然療癒感。",
+                mapUrl: "https://www.google.com/maps/search/?api=1&query=蓋婭莊園"
+            },
+            {
+                id: 8,
+                name: "歐樂沃築夢城堡",
+                category: "歐風城堡",
+                lat: 23.5899181,
+                lng: 120.5255839,
+                desc: "以粉紅色城牆搭配藍色尖塔，充滿了童話故事的夢幻風格，被稱作「台版迪士尼」。園區內主打巧克力與可可文化體驗。",
+                mapUrl: "https://www.google.com/maps/search/?api=1&query=歐樂沃築夢城堡"
+            },
+            {
+                id: 9,
+                name: "民雄森林公園",
+                category: "自然公園",
+                lat: 23.5406888,
+                lng: 120.438472,
+                desc: "保留了豐富林木景觀的大型綠地公園，步道規劃完善。環境清幽遠離都市喧囂，是個能讓人徹底放慢腳步、呼吸新鮮空氣的好地方。",
+                mapUrl: "https://www.google.com/maps/search/?api=1&query=民雄森林公園"
+            },
+            {
+                id: 10,
+                name: "星巴克 嘉義民雄門市",
+                category: "咖啡廳",
+                lat: 23.559363,
+                lng: 120.4337359,
+                desc: "擁有絕美的歐式教堂風格外觀，室內挑高設計讓整體採光極佳。氣氛舒適，是享用咖啡與消磨午後時光的熱門地標。",
+                mapUrl: "https://www.google.com/maps/search/?api=1&query=星巴克+嘉義民雄門市"
+            }
+        ];
+
+        // Tile Layers definition
+        // 1. 臺灣通用電子地圖 (NLSC 國土測繪圖資服務雲 - 預設底圖)
+        const nlscEmap = L.tileLayer('https://wmts.nlsc.gov.tw/wmts/EMAP/default/GoogleMapsCompatible/{z}/{y}/{x}', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://maps.nlsc.gov.tw/" target="_blank">內政部國土測繪中心</a>'
+        });
+
+        // 2. Esri World Street Map (全球街道地圖)
+        const esriStreet = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+            maxZoom: 19,
+            attribution: 'Tiles &copy; Esri'
+        });
+
+        // Initialize Map with Taiwan NLSC as default
+        const map = L.map('map', {
+            center: [23.565, 120.47],
+            zoom: 13,
+            layers: [nlscEmap]
+        });
+
+        // Add Layer Control for user switching between NLSC and Esri
+        const baseMaps = {
+            "🇹🇼 臺灣通用電子圖 (國土測繪)": nlscEmap,
+            "🌐 Esri 街道圖": esriStreet
+        };
+        L.control.layers(baseMaps).addTo(map);
+
+        const markers = {};
+        let currentSelectedId = null;
+
+        // Custom Pin Marker
+        function createCustomPin(id, isSelected = false) {
+            return L.divIcon({
+                className: 'custom-div-icon',
+                html: `<div class="custom-pin ${isSelected ? 'selected-pin' : ''}"><span>${id}</span></div>`,
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32]
+            });
+        }
+
+        // Render Spots in Sidebar
+        function renderSpots(filterCat = 'ALL') {
+            const listEl = document.getElementById('spots-list');
+            listEl.innerHTML = '';
+
+            const filtered = filterCat === 'ALL' ? spots : spots.filter(s => s.category === filterCat);
+
+            filtered.forEach(spot => {
+                const card = document.createElement('div');
+                card.className = `spot-card ${currentSelectedId === spot.id ? 'selected' : ''}`;
+                card.id = `card-${spot.id}`;
+                card.onclick = (e) => {
+                    if (e.target.tagName !== 'A') {
+                        selectSpot(spot.id, true);
+                    }
+                };
+
+                card.innerHTML = `
+                    <div class="card-top">
+                        <div class="card-title">
+                            <span class="badge-index">${spot.id}</span>
+                            <span>${spot.name}</span>
+                        </div>
+                        <span class="category-tag ${spot.category}">${spot.category}</span>
+                    </div>
+                    <div class="card-desc">${spot.desc}</div>
+                    <div class="card-actions">
+                        <button class="btn-locate" onclick="event.stopPropagation(); selectSpot(${spot.id}, true)">
+                            🎯 地圖定位
+                        </button>
+                        <a href="${spot.mapUrl}" target="_blank" class="btn-map-link">
+                            📍 Google地圖
+                        </a>
+                    </div>
+                `;
+                listEl.appendChild(card);
+            });
+        }
+
+        // Add Markers to Map
+        spots.forEach(spot => {
+            const marker = L.marker([spot.lat, spot.lng], {
+                icon: createCustomPin(spot.id)
+            }).addTo(map);
+
+            const popupContent = `
+                <div class="popup-content">
+                    <div class="popup-title">${spot.id}. ${spot.name}</div>
+                    <div style="margin-bottom: 6px;">
+                        <span class="category-tag ${spot.category}">${spot.category}</span>
+                    </div>
+                    <div class="popup-desc">${spot.desc}</div>
+                    <a href="${spot.mapUrl}" target="_blank" class="popup-link">📍 在 Google 地圖開啟</a>
+                </div>
+            `;
+            marker.bindPopup(popupContent);
+
+            marker.on('click', () => {
+                selectSpot(spot.id, false);
+            });
+
+            markers[spot.id] = marker;
+        });
+
+        // Fit map bounds to show all markers
+        const group = new L.featureGroup(Object.values(markers));
+        map.fitBounds(group.getBounds().pad(0.1));
+
+        // Select Spot interaction
+        function selectSpot(id, panMap = true) {
+            currentSelectedId = id;
+            const spot = spots.find(s => s.id === id);
+            if (!spot) return;
+
+            // Update markers
+            Object.keys(markers).forEach(k => {
+                const isTarget = parseInt(k) === id;
+                markers[k].setIcon(createCustomPin(k, isTarget));
+            });
+
+            // Update cards
+            document.querySelectorAll('.spot-card').forEach(c => c.classList.remove('selected'));
+            const activeCard = document.getElementById(`card-${id}`);
+            if (activeCard) {
+                activeCard.classList.add('selected');
+                activeCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            // Map action
+            const marker = markers[id];
+            if (marker) {
+                if (panMap) {
+                    map.flyTo([spot.lat, spot.lng], 15, { duration: 1 });
+                    setTimeout(() => {
+                        marker.openPopup();
+                    }, 500);
+                } else {
+                    marker.openPopup();
+                }
+            }
+
+            // If on mobile and selected from list, switch to map
+            if (window.innerWidth <= 768 && panMap) {
+                switchMobileTab('map');
+            }
+        }
+
+        // Category filter
+        function filterCategory(cat) {
+            document.querySelectorAll('.filter-tag').forEach(tag => {
+                if (tag.getAttribute('data-category') === cat) {
+                    tag.classList.add('active');
+                } else {
+                    tag.classList.remove('active');
+                }
+            });
+
+            renderSpots(cat);
+
+            // Filter markers on map
+            spots.forEach(spot => {
+                const marker = markers[spot.id];
+                if (cat === 'ALL' || spot.category === cat) {
+                    if (!map.hasLayer(marker)) map.addLayer(marker);
+                } else {
+                    if (map.hasLayer(marker)) map.removeLayer(marker);
+                }
+            });
+        }
+
+        // Mobile tabs
+        function switchMobileTab(tab) {
+            const sidebar = document.getElementById('sidebar');
+            const mapContainer = document.getElementById('map-container');
+            const tabMap = document.getElementById('tab-map');
+            const tabList = document.getElementById('tab-list');
+
+            if (tab === 'map') {
+                sidebar.classList.remove('mobile-active');
+                mapContainer.classList.remove('mobile-hidden');
+                tabMap.classList.add('active');
+                tabList.classList.remove('active');
+                map.invalidateSize();
+            } else {
+                sidebar.classList.add('mobile-active');
+                mapContainer.classList.add('mobile-hidden');
+                tabMap.classList.remove('active');
+                tabList.classList.add('active');
+            }
+        }
+
+        // Initial render
+        renderSpots('ALL');
+    </script>
+</body>
+</html>
